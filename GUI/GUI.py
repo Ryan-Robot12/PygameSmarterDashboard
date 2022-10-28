@@ -5,6 +5,7 @@ import pygame
 blue = (0, 0, 255)
 gray = (127, 127, 127)
 black = (0, 0, 0)
+white = (255, 255, 255)
 pygame.init()
 font_style = pygame.font.Font("assets/arial.ttf", 12)  # using arial.tff in case the system does not have arial for some reason
 
@@ -78,3 +79,32 @@ class ValueBox:
         textRect.center = (int(self.x + (self.width / 2)), int(self.y + (self.height / (5/3))))
         display.blit(text, textRect)
         pygame.display.update()
+
+
+class Menu:
+    def __init__(self, options):
+        self.rectangle = [0, 0, 0, 0]
+        self.options = options
+
+    def setPos(self, location: tuple):
+        self.rectangle = [location[0], location[1], self.rectangle[2], self.rectangle[3]]
+
+    def show(self, display: pygame.display):
+        height = 6 * len(self.options) * len(self.options)  # 12pt font
+        width = 0
+        for option in self.options:
+            width = max(len(option), width)
+        width *= 12  # margins
+        pygame.draw.rect(display, white, [self.rectangle[0], self.rectangle[1], width, height])
+        self.rectangle = [self.rectangle[0], self.rectangle[1], width, height]
+
+        for index, option in enumerate(self.options):
+            text = font_style.render(option, True, black)
+            textRect = text.get_rect()
+            textRect.center = (self.rectangle[0] + (self.rectangle[2] // 2), self.rectangle[1] + (self.rectangle[3] // 2) + (12 * (index - 1)))
+            display.blit(text, textRect)
+
+    def hide(self, display: pygame.display):
+        pygame.draw.rect(display, black, self.rectangle)
+
+
